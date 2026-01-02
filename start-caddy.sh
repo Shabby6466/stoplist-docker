@@ -13,12 +13,12 @@ if ! command -v docker compose &> /dev/null; then
     exit 1
 fi
 
-if [ ! -d "../etd-dgip" ]; then
+if [ ! -d "../stoplist-backend" ]; then
     echo "❌ Backend Directory does not exist"
     exit 1
 fi
 
-if [ ! -d "../etd-frontend-next" ]; then
+if [ ! -d "../stoplist-frontend" ]; then
     echo "❌ Frontend Directory does not exist"
     exit 1
 fi
@@ -48,12 +48,6 @@ else
     echo "❌ PostgreSQL is not ready"
 fi
 
-# Check Backend
-if curl -f http://localhost:3836/health > /dev/null 2>&1; then
-    echo "✅ Backend API is ready"
-else
-    echo "❌ Backend API is not ready"
-fi
 
 # Check Frontend
 if curl -f http://localhost:3000 > /dev/null 2>&1; then
