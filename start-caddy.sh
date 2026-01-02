@@ -5,10 +5,10 @@
 
 set -e
 
-echo "🚀 Starting ETD Application with Caddy Reverse Proxy..."
+echo "🚀 Starting stoplist Application with Caddy Reverse Proxy..."
 
 # Check if docker-compose is available
-if ! command -v docker compose &> /dev/null; then
+if ! command -v docker-compose &> /dev/null; then
     echo "❌ docker-compose is not installed. Please install docker-compose first."
     exit 1
 fi
@@ -32,7 +32,7 @@ fi
 
 # Build and start services with Caddy
 echo "🔨 Building and starting services with Caddy reverse proxy..."
-docker compose -f docker-compose.caddy.yml up --build -d
+docker-compose -f docker-compose.caddy.yml up --build -d
 
 # Wait for services to be ready
 echo "⏳ Waiting for services to be ready..."
@@ -42,7 +42,7 @@ sleep 20
 echo "🔍 Checking service health..."
 
 # Check PostgreSQL
-if docker compose -f docker-compose.caddy.yml exec postgres pg_isready -U etd_user -d etd_db > /dev/null 2>&1; then
+if docker-compose -f docker-compose.caddy.yml exec postgres pg_isready -U stoplist_user -d stoplist_db > /dev/null 2>&1; then
     echo "✅ PostgreSQL is ready"
 else
     echo "❌ PostgreSQL is not ready"
@@ -57,7 +57,7 @@ else
 fi
 
 echo ""
-echo "🎉 ETD Application is running with Caddy Reverse Proxy!"
+echo "🎉 STOPLIST Application is running with Caddy Reverse Proxy!"
 echo "📱 Frontend: http://172.17.128.147"
 echo "🔧 Backend API: http://172.17.128.147/api"
 echo "🗄️  PostgreSQL: localhost:5432"
