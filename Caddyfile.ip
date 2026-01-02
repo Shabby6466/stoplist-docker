@@ -1,0 +1,26 @@
+# Caddy configuration for IP address (no SSL)
+# This will work without a domain but won't have SSL
+
+172.17.128.147 {
+    # Frontend (Next.js)
+    handle {
+        reverse_proxy stoplist-frontend:3000
+    }
+
+    # Backend API
+    handle /api/* {
+        reverse_proxy stoplist-backend:3836 {
+            rewrite * /v1/api{path}
+        }
+    }
+
+    # Health check endpoint
+    handle /health {
+        reverse_proxy stoplist-backend:3836
+    }
+
+    # Logging
+    log {
+        output file /var/log/caddy/access.log
+    }
+}

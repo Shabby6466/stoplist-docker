@@ -1,0 +1,35 @@
+# Caddy configuration for STOPLIST Application with IP address
+# This will work without a domain but won't have SSL
+
+
+
+#development with : 80
+
+:80 {
+
+    # Backend API	
+    handle /api/* {
+        reverse_proxy stoplist-backend:3836
+    }
+
+    handle /docs {
+        reverse_proxy stoplist-backend:3836
+
+    }
+
+    # Health check endpoint
+    handle /health {
+        reverse_proxy stoplist-backend:3836
+    }
+
+    #Frontend NEXT/js
+    handle {
+    reverse_proxy stoplist-frontend:3000
+    }
+
+    # Logging
+    log {
+        output file /var/log/caddy/access.log
+	level INFO
+    }
+}

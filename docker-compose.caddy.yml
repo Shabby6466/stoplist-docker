@@ -1,0 +1,93 @@
+
+services:
+  # Caddy Reverse Proxy with IP (no SSL)
+  caddy:
+    image: caddy:2-alpine
+    container_name: etd-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_logs:/var/log/caddy
+    networks:
+      - etd-network
+    depends_on:
+      - etd-frontend
+      - etd-backend
+
+  # PostgreSQL Database
+  postgres:
+    image: postgis/postgis:15-3.3
+    container_name: etd-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: etd_db
+      POSTGRES_USER: etd_user
+      POSTGRES_PASSWORD: etd_password
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ../etd-dgip/src/migrations:/docker-entrypoint-initdb.d
+    networks:
+      - etd-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U etd_user -d etd_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+
+  # Backend API Service
+  etd-backend:
+    build:
+      context: ../etd-dgip
+      dockerfile: Dockerfile
+    container_name: etd-backend
+    ports:
+       - "3836:3836"
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: etd_user
+      DB_PASSWORD: etd_password
+      DB_DATABASE: etd_db
+      JWT_SECRET_KEY: etd-jwt-secret-key
+      JWT_EXPIRES_IN: 24h
+      APP_PORT: 3836
+    volumes:
+      - ./etd-dgip/uploads:/app/uploads
+    networks:
+      - etd-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Frontend Service
+  etd-frontend:
+    build:
+      context: ../etd-frontend-next
+      dockerfile: Dockerfile
+    container_name: etd-frontend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: http://172.17.128.147/api
+    ports:
+      - "3000:3000"
+    networks:
+      - etd-network
+
+networks:
+  etd-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+    driver: local
+  caddy_logs:
+    driver: local
