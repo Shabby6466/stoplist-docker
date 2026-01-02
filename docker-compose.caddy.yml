@@ -28,7 +28,7 @@ services:
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      - ../stoplist-dgip/src/migrations:/docker-entrypoint-initdb.d
+      # - ../pcl-backend/src/migrations:/docker-entrypoint-initdb.d
     networks:
       - stoplist-network
     healthcheck:
@@ -58,8 +58,6 @@ services:
       JWT_SECRET_KEY: stoplist-jwt-secret-key
       JWT_EXPIRES_IN: 24h
       APP_PORT: 3836
-    volumes:
-      - ./stoplist-dgip/uploads:/app/uploads
     networks:
       - stoplist-network
     depends_on:
