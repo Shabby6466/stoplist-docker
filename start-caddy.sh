@@ -13,12 +13,12 @@ if ! command -v docker compose &> /dev/null; then
     exit 1
 fi
 
-if [ ! -d "../stoplist-backend" ]; then
+if [ ! -d "./stoplist-backend" ]; then
     echo "❌ Backend Directory does not exist"
     exit 1
 fi
 
-if [ ! -d "../stoplist-frontend" ]; then
+if [ ! -d "./stoplist-frontend" ]; then
     echo "❌ Frontend Directory does not exist"
     exit 1
 fi
