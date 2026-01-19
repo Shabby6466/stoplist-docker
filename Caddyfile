@@ -9,17 +9,17 @@
 
     # Backend API	
     handle /api/* {
-        reverse_proxy stoplist-backend:3836
+        reverse_proxy stoplist-backend:3837
     }
 
     handle /docs {
-        reverse_proxy stoplist-backend:3836
+        reverse_proxy stoplist-backend:3837
 
     }
 
     # Health check endpoint
     handle /health {
-        reverse_proxy stoplist-backend:3836
+        reverse_proxy stoplist-backend:3837
     }
 
     #Frontend NEXT/js
