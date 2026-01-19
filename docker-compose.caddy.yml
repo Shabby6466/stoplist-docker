@@ -46,7 +46,7 @@ services:
       dockerfile: Dockerfile
     container_name: stoplist-backend
     ports:
-      - "3836:3836"
+      - "3836:3837"
     restart: unless-stopped
     environment:
       NODE_ENV: production
@@ -57,7 +57,7 @@ services:
       DB_DATABASE: stoplist_db
       JWT_SECRET_KEY: stoplist-jwt-secret-key
       JWT_EXPIRES_IN: 24h
-      APP_PORT: 3836
+      APP_PORT: 3837
     networks:
       - stoplist-network
     depends_on:
