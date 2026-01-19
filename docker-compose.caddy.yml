@@ -72,7 +72,6 @@ services:
     container_name: stoplist-frontend
     restart: unless-stopped
     environment:
-      NODE_ENV: production
       NEXT_PUBLIC_API_URL: http://172.17.128.147:3836/v1/api
     ports:
       - "3000:3000"
